@@ -27,7 +27,9 @@ public class AccountController implements AccountsApi {
 
     @Override
     public Mono<ResponseEntity<Account>> getAccountByAccountId(String accountId, ServerWebExchange exchange) {
-        return null;
+        log.info("Accounts for filter accountId");
+        return accountService.getAccountByAccountId(accountId)
+                .map(account -> ResponseEntity.ok().body(account));
     }
 
     @Override

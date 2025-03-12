@@ -27,7 +27,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Mono<Account> getAccountByAccountId(String accountId) {
-        return null;
+        log.info("Get account by number {}", maskAccount(accountId));
+        return accountRepository.findByNumber(accountId)
+                .map(AccountMapper.INSTANCE::accountEntityToDto)
+                .doOnError(throwable -> log.error("Error for search {}", throwable.getMessage()));
     }
 
     @Override
@@ -43,5 +46,13 @@ public class AccountServiceImpl implements AccountService {
                                     return dto;
                                 }))
                 .doOnError(throwable -> log.error("Error for service customer {}", throwable.getMessage()));
+    }
+
+    private String maskAccount(String accountId) {
+        String firstDigits = accountId.substring(0, 2);
+        String lastDigits = accountId.substring(accountId.length() - 2);
+        return firstDigits +
+                "*".repeat(Math.max(0, accountId.length() - 4)) +
+                lastDigits;
     }
 }
