@@ -13,3 +13,9 @@ management:
   endpoints:
     web:
       base-path: actuator
+
+client:
+  users: http://localhost:8080/api/v1/
+
+server:
+  port: 8081

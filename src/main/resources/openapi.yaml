@@ -7,7 +7,7 @@ info:
     name: José Obando
     email: jose.obando_0001@hotmail.com
 servers:
-  - url: http://localhost:8080/api/v1
+  - url: http://localhost:8080/api/v1/
     description: Development
 tags:
   - name: Accounts
@@ -137,6 +137,8 @@ components:
           enum: [ Credit, Debit ]
         value:
           type: number
+          minimum: 0.1
+          maximum: 10000000000
         date:
           type: string
           format: date

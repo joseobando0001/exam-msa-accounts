@@ -1,0 +1,288 @@
+openapi: 3.0.3
+info:
+  title: API for Clients
+  description: API for make CRUD operations of Client & Person.
+  version: 1.0.0
+  contact:
+    name: José Obando
+    email: jose.obando_0001@hotmail.com
+servers:
+  - url: http://localhost:8080/api/v1/
+    description: Development
+tags:
+  - name: Customer
+    description: Customer Controller
+  - name: Person
+    description: Person Controller
+paths:
+  /customers:
+    get:
+      tags:
+        - Customer
+      operationId: GetCustomerByFilter
+      summary: Get list of clients
+      description: List of clients.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+    post:
+      tags:
+        - Customer
+      summary: Create new client
+      operationId: PostCustomer
+      description: Create new client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '201':
+          description: Client created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+
+  /customers/{userId}:
+    get:
+      tags:
+        - Customer
+      summary: Get a customer by ID
+      operationId: GetCustomerById
+      description: Get a customer by ID;
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: User Id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '404':
+          description: User not found
+
+    put:
+      tags:
+        - Customer
+      summary: Update a customer
+      operationId: PutCustomer
+      description: Update a customer.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: User Id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '200':
+          description: Client updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '404':
+          description: Client not found
+
+    delete:
+      tags:
+        - Customer
+      summary: Delete customer
+      operationId: DeleteCustomer
+      description: Delete customer
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: UserId
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Client deleted
+        '404':
+          description: Client not found
+
+  /person:
+    get:
+      tags:
+        - Person
+      operationId: GetPersonByFilter
+      summary: Get list of people
+      description: List of people.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+    post:
+      tags:
+        - Person
+      summary: Create new person
+      operationId: PostPerson
+      description: Create new person
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Person'
+      responses:
+        '201':
+          description: Person created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+
+  /person/{userId}:
+    get:
+      tags:
+        - Person
+      summary: Get a person by ID
+      operationId: GetPersonById
+      description: Get a person by ID;
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: User Id
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Person found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '404':
+          description: Person not found
+
+    put:
+      tags:
+        - Person
+      summary: Update a person
+      description: Update a person.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: User Id
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Person'
+      responses:
+        '200':
+          description: Person updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '404':
+          description: Person not found
+
+    delete:
+      tags:
+        - Person
+      summary: Delete person
+      description: Delete person
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: UserId
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Person deleted
+        '404':
+          description: Person not found
+
+components:
+  schemas:
+    Client:
+      type: object
+      properties:
+        names:
+          type: string
+          description: names for client
+          example: Jose Lema
+        address:
+          type: string
+          description: address for client
+          example: Otavalo sn y principal
+        phone:
+          type: string
+          description: phone for client
+          example: 0986492314
+        password:
+          type: string
+          description: password for client
+          example: "*******"
+        status:
+          type: boolean
+          description: status for client
+          example: True
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the person
+        name:
+          type: string
+          description: Name of the person
+        gender:
+          type: string
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+          description: Gender of the person
+        identification:
+          type: string
+          description: Identification number or document of the person
+        address:
+          type: string
+          description: Address of the person
+        phone:
+          type: string
+          description: Phone number of the person
+      required:
+        - name
+        - gender
+        - identification
+        - address
+        - phone
