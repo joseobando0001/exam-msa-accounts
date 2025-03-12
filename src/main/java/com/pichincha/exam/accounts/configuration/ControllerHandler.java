@@ -1,6 +1,7 @@
 package com.pichincha.exam.accounts.configuration;
 
 import com.pichincha.exam.accounts.domain.dto.Error;
+import com.pichincha.exam.accounts.exception.DuplicateAccount;
 import com.pichincha.exam.accounts.exception.FundsUnavailable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ import static com.pichincha.exam.accounts.constants.ErrorConstants.BAD_VALUE;
 @RestControllerAdvice
 public class ControllerHandler {
 
-    @ExceptionHandler(FundsUnavailable.class)
+    @ExceptionHandler({FundsUnavailable.class, DuplicateAccount.class})
     public ResponseEntity<Object> handleFailure(Exception exception) {
         log.error(exception.toString());
         return buildResponseEntity(new Error(exception.getMessage(), HttpStatus.BAD_REQUEST));

@@ -38,6 +38,7 @@ public class MovementServiceImpl implements MovementService {
                 .flatMap(account -> {
                     com.pichincha.exam.accounts.domain.entity.Movement entity = MovementMapper.INSTANCE.movementDtoToEntity(movement);
                     entity.setDate(LocalDateTime.now());
+
                     if (movement.getType().equals(MovementRequest.TypeEnum.DEBIT) && account.getInitialValue().compareTo(movement.getValue()) < 0) {
                         return Mono.error(new FundsUnavailable(UNAVAILABLE_FUNDS));
                     }

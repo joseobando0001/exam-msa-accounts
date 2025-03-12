@@ -1,5 +1,6 @@
 package com.pichincha.exam.accounts.service;
 
+import com.pichincha.exam.accounts.exception.DuplicateAccount;
 import com.pichincha.exam.accounts.helper.AccountMapper;
 import com.pichincha.exam.accounts.repository.AccountRepository;
 import com.pichincha.exam.models.Account;
@@ -9,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import static com.pichincha.exam.accounts.constants.ErrorConstants.UNAVAILABLE;
 
 @Service
 @Slf4j
@@ -40,6 +43,7 @@ public class AccountServiceImpl implements AccountService {
                 .flatMap(client ->
                         accountRepository.save(
                                         AccountMapper.INSTANCE.accountDtoToEntity(account))
+                                .onErrorMap(throwable -> new DuplicateAccount(UNAVAILABLE))
                                 .map(entity -> {
                                     Account dto = AccountMapper.INSTANCE.accountEntityToDto(entity);
                                     dto.setClient(client.getNames());
