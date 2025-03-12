@@ -19,7 +19,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Flux<Account> getAccountByFilter() {
-        return null;
+        log.info("Get accounts");
+        return accountRepository.findAllByStatus(Boolean.TRUE)
+                .map(AccountMapper.INSTANCE::accountEntityToDto)
+                .doOnError(throwable -> log.error("Error for get accounts"));
     }
 
     @Override

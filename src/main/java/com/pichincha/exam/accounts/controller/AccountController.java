@@ -19,7 +19,10 @@ public class AccountController implements AccountsApi {
 
     @Override
     public Mono<ResponseEntity<Flux<Account>>> getAccountByFilter(ServerWebExchange exchange) {
-        return null;
+        log.info("Accounts for obtained");
+        return accountService.getAccountByFilter()
+                .collectList()
+                .map(accounts -> ResponseEntity.ok().body(Flux.fromIterable(accounts)));
     }
 
     @Override

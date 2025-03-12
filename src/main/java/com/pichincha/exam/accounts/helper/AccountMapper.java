@@ -26,6 +26,8 @@ public interface AccountMapper {
             @Mapping(source = "type", target = "type"),
             @Mapping(source = "initialValue", target = "initialBalance"),
             @Mapping(source = "status", target = "status"),
+            @Mapping(source = "clientId", target = "client")
+
     })
     com.pichincha.exam.models.Account accountEntityToDto(Account account);
 
