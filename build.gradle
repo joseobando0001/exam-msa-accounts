@@ -1,0 +1,81 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.3'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.openapi.generator' version "7.12.0"
+}
+
+group = 'com.pichincha.exam'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2024.0.0")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.cloud:spring-cloud-stream'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'io.r2dbc:r2dbc-h2'
+	implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.8.0'
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.28'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.register('buildSpringContract', GenerateTask) {
+	generatorName = "spring"
+	inputSpec = "$projectDir/src/main/resources/openapi.yaml"
+	outputDir = "$buildDir/generated"
+	apiPackage = "com.pichincha.exam.api"
+	invokerPackage = "com.pichincha.exam"
+	modelPackage = "com.pichincha.exam.models"
+	configOptions = [
+			serializableModel: "true",
+			openApiNullable: "false",
+			dateLibrary: "java8",
+			useJakartaEe: "true",
+			basePackage: "com.pichincha",
+			sourceFolder: "src/main/java",
+			interfaceOnly: "true",
+			reactive: "true"
+	]
+}
+
+sourceSets.main.java.srcDirs = ["src/main/java","$buildDir/generated/src/main/java",]
+
+compileJava{
+	dependsOn buildSpringContract
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

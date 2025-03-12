@@ -25,7 +25,7 @@ public class Movement implements Serializable {
     private LocalDateTime date;
 
     @Column("type")
-    private String type;
+    private TypeMovement type;
 
     @Column("amount ")
     private BigDecimal amount;
@@ -34,6 +34,6 @@ public class Movement implements Serializable {
     private BigDecimal balance;
 
     @Column("account_id")
-    private Account accountId;
+    private Long accountId;
 
 }

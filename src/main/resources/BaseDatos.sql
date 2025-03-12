@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS Account (
     number VARCHAR(50) UNIQUE NOT NULL,
     type VARCHAR(20) NOT NULL,
     initial_value DECIMAL(15,2) NOT NULL,
+    client_id INT NOT NULL,
     status BOOLEAN NOT NULL
 );
 

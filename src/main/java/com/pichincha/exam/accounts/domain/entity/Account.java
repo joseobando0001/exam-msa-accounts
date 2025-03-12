@@ -24,12 +24,15 @@ public class Account implements Serializable {
     private String number;
 
     @Column("type")
-    private String type;
+    private TypeAccount type;
 
     @Column("initial_value")
     private BigDecimal initialValue;
 
     @Column("status")
     private Boolean status;
+
+    @Column("client_id")
+    private Long clientId;
 
 }
