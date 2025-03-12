@@ -78,10 +78,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Movement'
+              $ref: '#/components/schemas/MovementRequest'
       responses:
         '201':
-          description: Transaction successfully recorded
+          description: Movement message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovementMessage'
     get:
       tags:
         - Movements
@@ -170,3 +174,20 @@ components:
           enum: [ Credit, Debit ]
         status:
           type: boolean
+    MovementMessage:
+      type: object
+      properties:
+        message:
+          type: string
+    MovementRequest:
+      type: object
+      properties:
+        accountNumber:
+          type: string
+        type:
+          type: string
+          enum: [ Credit, Debit ]
+        value:
+          type: number
+          minimum: 0.1
+          maximum: 10000000000

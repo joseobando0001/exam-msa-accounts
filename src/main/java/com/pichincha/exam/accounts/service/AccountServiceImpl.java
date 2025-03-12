@@ -51,8 +51,8 @@ public class AccountServiceImpl implements AccountService {
     private String maskAccount(String accountId) {
         String firstDigits = accountId.substring(0, 2);
         String lastDigits = accountId.substring(accountId.length() - 2);
-        return firstDigits +
-                "*".repeat(Math.max(0, accountId.length() - 4)) +
-                lastDigits;
+        return firstDigits.formatted(
+                "*".repeat(Math.max(0, accountId.length() - 4)),
+                lastDigits);
     }
 }
