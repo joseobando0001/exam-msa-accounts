@@ -1,5 +1,6 @@
 package com.pichincha.exam.accounts.service;
 
+import com.pichincha.exam.accounts.domain.entity.TypeMovement;
 import com.pichincha.exam.accounts.exception.FundsUnavailable;
 import com.pichincha.exam.accounts.helper.MovementMapper;
 import com.pichincha.exam.accounts.repository.AccountRepository;
@@ -7,6 +8,7 @@ import com.pichincha.exam.accounts.repository.MovementRepository;
 import com.pichincha.exam.models.MovementFilter;
 import com.pichincha.exam.models.MovementMessage;
 import com.pichincha.exam.models.MovementRequest;
+import com.pichincha.exam.users.CustomerApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,6 @@ import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static com.pichincha.exam.accounts.constants.ErrorConstants.NOT_FOUND;
 import static com.pichincha.exam.accounts.constants.ErrorConstants.UNAVAILABLE_FUNDS;
@@ -26,10 +27,35 @@ import static com.pichincha.exam.accounts.constants.ErrorConstants.UNAVAILABLE_F
 public class MovementServiceImpl implements MovementService {
     private final MovementRepository movementRepository;
     private final AccountRepository accountRepository;
+    private final CustomerApi customerApi;
 
     @Override
     public Flux<MovementFilter> getMovementByFilter(String clientId, LocalDate startDate, LocalDate endDate) {
-        return null;
+        return customerApi.getCustomerById(clientId)
+                .flatMapMany(client ->
+                        accountRepository.findAllByClientId(clientId)
+                                .flatMap(account ->
+                                        movementRepository.findAllByDateBetweenAndAccountId(
+                                                        startDate,
+                                                        endDate,
+                                                        String.valueOf(account.getId()))
+                                                .flatMap(movement -> {
+
+                                                    BigDecimal newBalance = movement.getType().equals(TypeMovement.CREDIT)
+                                                            ? movement.getBalance().subtract(movement.getAmount())
+                                                            : movement.getBalance().add(movement.getAmount());
+
+                                                    MovementFilter movementFilter = MovementMapper.INSTANCE.entityToMovementFilter(movement);
+                                                    movementFilter.setAvailableBalance(movement.getBalance());
+                                                    movementFilter.setInitBalance(newBalance.intValue() < 0 ? BigDecimal.ZERO : newBalance);
+                                                    movementFilter.setType(MovementFilter.TypeEnum.valueOf(account.getType().name()));
+                                                    movementFilter.setTypeMovement(MovementFilter.TypeMovementEnum.valueOf(movement.getType().name()));
+                                                    movementFilter.setStatus(account.getStatus());
+                                                    movementFilter.setAccountNumber(account.getNumber());
+                                                    movementFilter.setClient(client.getNames());
+                                                    return Flux.just(movementFilter);
+                                                }))
+                );
     }
 
     @Override
@@ -37,7 +63,7 @@ public class MovementServiceImpl implements MovementService {
         return accountRepository.findByNumber(movement.getAccountNumber())
                 .flatMap(account -> {
                     com.pichincha.exam.accounts.domain.entity.Movement entity = MovementMapper.INSTANCE.movementDtoToEntity(movement);
-                    entity.setDate(LocalDateTime.now());
+                    entity.setDate(LocalDate.now());
 
                     if (movement.getType().equals(MovementRequest.TypeEnum.DEBIT) && account.getInitialValue().compareTo(movement.getValue()) < 0) {
                         return Mono.error(new FundsUnavailable(UNAVAILABLE_FUNDS));

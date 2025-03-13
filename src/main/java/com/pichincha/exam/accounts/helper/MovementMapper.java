@@ -1,6 +1,7 @@
 package com.pichincha.exam.accounts.helper;
 
 import com.pichincha.exam.accounts.domain.entity.Movement;
+import com.pichincha.exam.models.MovementFilter;
 import com.pichincha.exam.models.MovementRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,6 +19,14 @@ public interface MovementMapper {
             @Mapping(target = "amount", source = "value"),
     })
     Movement movementDtoToEntity(MovementRequest movementRequest);
+
+
+    @Mappings({
+            @Mapping(target = "value", source = "amount"),
+            @Mapping(target = "date", source = "date"),
+            @Mapping(target = "type", ignore = true)
+    })
+    MovementFilter entityToMovementFilter(Movement movement);
 
 
 }

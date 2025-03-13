@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Table(name = "Movement")
 @Getter
@@ -22,12 +22,12 @@ public class Movement implements Serializable {
     private Long id;
 
     @Column("date")
-    private LocalDateTime date;
+    private LocalDate date;
 
     @Column("type")
     private TypeMovement type;
 
-    @Column("amount ")
+    @Column("amount")
     private BigDecimal amount;
 
     @Column("balance")

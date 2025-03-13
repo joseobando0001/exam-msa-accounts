@@ -23,7 +23,9 @@ public class MovementController implements MovementsApi {
 
     @Override
     public Mono<ResponseEntity<Flux<MovementFilter>>> getMovementByFilter(String clientId, LocalDate startDate, LocalDate endDate, ServerWebExchange exchange) {
-        return MovementsApi.super.getMovementByFilter(clientId, startDate, endDate, exchange);
+        return movementService.getMovementByFilter(clientId, startDate, endDate)
+                .collectList()
+                .map(accounts -> ResponseEntity.ok().body(Flux.fromIterable(accounts)));
     }
 
     @Override
