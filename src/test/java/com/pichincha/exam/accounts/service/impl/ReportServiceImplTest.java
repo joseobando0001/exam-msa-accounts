@@ -40,7 +40,8 @@ class ReportServiceImplTest {
         when(movementRepository.findAllByDateBetweenAndAccountId(any(), any(), any())).thenReturn(Flux.just(buildMovementForCredit()));
         StepVerifier.create(reportService.getReportByFilter("1", LocalDate.now(), LocalDate.now(), "pdf"))
                 .expectNextMatches(bytes -> bytes.length > 0)
-                .expectComplete().verify();
+                .expectComplete()
+                .verify();
     }
 
     @Test
@@ -50,6 +51,7 @@ class ReportServiceImplTest {
         when(movementRepository.findAllByDateBetweenAndAccountId(any(), any(), any())).thenReturn(Flux.just(buildMovementForDebit()));
         StepVerifier.create(reportService.getReportByFilter("1", LocalDate.now(), LocalDate.now(), "xlsx"))
                 .expectNextMatches(bytes -> bytes.length > 0)
-                .expectComplete().verify();
+                .expectComplete()
+                .verify();
     }
 }

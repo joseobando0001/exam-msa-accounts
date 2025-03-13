@@ -4,6 +4,7 @@ import com.pichincha.exam.accounts.domain.entity.Account;
 import com.pichincha.exam.accounts.domain.entity.Movement;
 import com.pichincha.exam.accounts.domain.entity.TypeAccount;
 import com.pichincha.exam.accounts.domain.entity.TypeMovement;
+import com.pichincha.exam.models.MovementRequest;
 import com.pichincha.exam.users.model.Client;
 
 import java.math.BigDecimal;
@@ -42,6 +43,30 @@ public class MockUtil {
         movement.setType(TypeMovement.CREDIT);
         movement.setAmount(BigDecimal.ONE);
         movement.setBalance(BigDecimal.TEN);
+        return movement;
+    }
+
+    public static MovementRequest buildMovementRequestForCredit() {
+        MovementRequest movement = new MovementRequest();
+        movement.setType(MovementRequest.TypeEnum.CREDIT);
+        movement.setAccountNumber("1223156156");
+        movement.setValue(BigDecimal.valueOf(100));
+        return movement;
+    }
+
+    public static MovementRequest buildMovementRequestForDebit() {
+        MovementRequest movement = new MovementRequest();
+        movement.setType(MovementRequest.TypeEnum.DEBIT);
+        movement.setAccountNumber("1223156156");
+        movement.setValue(BigDecimal.valueOf(1));
+        return movement;
+    }
+
+    public static MovementRequest buildMovementRequestForDebitError() {
+        MovementRequest movement = new MovementRequest();
+        movement.setType(MovementRequest.TypeEnum.DEBIT);
+        movement.setAccountNumber("1223156156");
+        movement.setValue(BigDecimal.valueOf(100));
         return movement;
     }
 
