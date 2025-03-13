@@ -5,6 +5,6 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 
 public interface ReportService {
-    Mono<byte[]> getMovementByFilter(String clientId, LocalDate startDate, LocalDate endDate,String reportType);
+    Mono<byte[]> getReportByFilter(String clientId, LocalDate startDate, LocalDate endDate, String reportType);
 
 }

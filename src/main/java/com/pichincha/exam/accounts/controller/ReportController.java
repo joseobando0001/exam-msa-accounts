@@ -23,7 +23,7 @@ public class ReportController implements ReportsApi {
     @Override
     public Mono<ResponseEntity<byte[]>> getReportByFilter(String reportType, String clientId, LocalDate startDate, LocalDate endDate, ServerWebExchange exchange) {
         log.info("Get report with : {}", FILENAME.concat(reportType));
-        return reportService.getMovementByFilter(clientId, startDate, endDate, reportType)
+        return reportService.getReportByFilter(clientId, startDate, endDate, reportType)
                 .map(report -> ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_DISPOSITION, FILENAME.concat(reportType))
                         .body(report));

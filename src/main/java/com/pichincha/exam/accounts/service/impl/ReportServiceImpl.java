@@ -30,7 +30,7 @@ public class ReportServiceImpl implements ReportService {
     private final MovementRepository movementRepository;
 
     @Override
-    public Mono<byte[]> getMovementByFilter(String clientId, LocalDate startDate, LocalDate endDate, String reportType) {
+    public Mono<byte[]> getReportByFilter(String clientId, LocalDate startDate, LocalDate endDate, String reportType) {
         log.info("Get report startDate {} endDate {} clientId {} ", startDate, endDate, clientId);
 
         return customerApi.getCustomerById(clientId)
