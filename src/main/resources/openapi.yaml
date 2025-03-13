@@ -109,15 +109,23 @@ paths:
           schema:
             type: string
             format: date
+        - name: reportType
+          in: query
+          description: "Type of report (pdf or excel)"
+          required: true
+          schema:
+            type: string
+            enum:
+              - pdf
+              - excel
       responses:
         '200':
           description: List of transactions
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MovementFilter'
+                type: string
+                format: byte
 components:
   schemas:
     Account:
