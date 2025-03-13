@@ -1,4 +1,4 @@
-package com.pichincha.exam.accounts.service;
+package com.pichincha.exam.accounts.service.impl;
 
 import com.pichincha.exam.accounts.domain.entity.Movement;
 import com.pichincha.exam.accounts.domain.entity.TypeMovement;
@@ -6,6 +6,7 @@ import com.pichincha.exam.accounts.exception.DuplicateAccount;
 import com.pichincha.exam.accounts.helper.AccountMapper;
 import com.pichincha.exam.accounts.repository.AccountRepository;
 import com.pichincha.exam.accounts.repository.MovementRepository;
+import com.pichincha.exam.accounts.service.AccountService;
 import com.pichincha.exam.models.Account;
 import com.pichincha.exam.users.CustomerApi;
 import lombok.RequiredArgsConstructor;

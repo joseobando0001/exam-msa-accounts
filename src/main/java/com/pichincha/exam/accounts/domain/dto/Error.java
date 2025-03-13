@@ -11,5 +11,4 @@ import java.io.Serializable;
 public class Error implements Serializable {
     private String message;
     private HttpStatus statusCode;
-
 }

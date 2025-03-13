@@ -14,6 +14,8 @@ tags:
     description: Accounts Controller
   - name: Movements
     description: Movements Controller
+  - name: Reports
+    description: Reports Controller
 paths:
   /accounts:
     post:
@@ -86,11 +88,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MovementMessage'
+  /reports:
     get:
       tags:
-        - Movements
+        - Reports
       summary: Retrieve transactions filtered by date and user
-      operationId: GetMovementByFilter
+      operationId: GetReportByFilter
       parameters:
         - name: clientId
           in: query
