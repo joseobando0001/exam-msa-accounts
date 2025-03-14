@@ -9,6 +9,27 @@ spring:
       enabled: true
   web-flux:
     base-path: /api/v1/
+  cloud:
+    stream:
+      bindings:
+        consume-in-0:
+          destination: ${TOPIC}
+          group: ${GROUP]
+      kafka:
+        binder:
+          configuration:
+            sasl:
+              mechanism: PLAIN
+              jaas:
+                  config: org.apache.kafka.common.security.plain.PlainLoginModule required username='${KAFKA_USERNAME}' password='${KAFKA_PASSWORD}';
+            security:
+              protocol: SASL_SSL
+          brokers: ${KAFKA_BROKER}
+          consumer:
+            maxAttempts: 3
+            backOffInitialInterval: 500
+            backOffMaxInterval: 1000
+            backOffMultiplier: 2.0
 management:
   endpoints:
     web:
