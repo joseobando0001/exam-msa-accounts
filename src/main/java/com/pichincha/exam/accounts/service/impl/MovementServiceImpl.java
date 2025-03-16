@@ -10,6 +10,7 @@ import com.pichincha.exam.models.MovementRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ import static com.pichincha.exam.accounts.constants.ErrorConstants.UNAVAILABLE_F
 public class MovementServiceImpl implements MovementService {
     private final MovementRepository movementRepository;
     private final AccountRepository accountRepository;
+    private final TransactionalOperator transactionalOperator;
 
     @Override
     public Mono<MovementMessage> postMovement(MovementRequest movement) {
@@ -45,6 +47,7 @@ public class MovementServiceImpl implements MovementService {
                     return movementRepository.save(entity)
                             .flatMap(movements -> accountRepository.save(account));
                 })
+                .as(transactionalOperator::transactional)
                 .map(movement1 -> buildBodyMessage(movement1.getType().name().concat(" $").concat(String.valueOf(movement1.getInitialValue()))))
                 .switchIfEmpty(Mono.error(new FundsUnavailable(NOT_FOUND)))
                 .doOnSuccess(movementMono -> buildBodyMessage("Successfully transaction"))

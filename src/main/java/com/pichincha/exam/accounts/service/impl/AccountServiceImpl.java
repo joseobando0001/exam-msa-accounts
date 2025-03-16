@@ -12,6 +12,7 @@ import com.pichincha.exam.users.CustomerApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -26,6 +27,7 @@ public class AccountServiceImpl implements AccountService {
     private final CustomerApi customerApi;
     private final AccountRepository accountRepository;
     private final MovementRepository movementRepository;
+    private final TransactionalOperator transactionalOperator;
 
     @Override
     public Flux<Account> getAccountByFilter() {
@@ -65,6 +67,7 @@ public class AccountServiceImpl implements AccountService {
                                             });
                                 })
                 )
+                .as(transactionalOperator::transactional)
                 .doOnError(throwable -> log.error("Error for service customer {}", throwable.getMessage()));
     }
 
