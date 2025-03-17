@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -27,11 +28,15 @@ class MovementServiceImplTest {
     @Mock
     AccountRepository accountRepository;
 
+    @Mock
+    TransactionalOperator transactionalOperator;
+
     @Test
     void postMovementForCredit() {
         when(accountRepository.findByNumber(any())).thenReturn(Mono.just(buildAccount()));
         when(accountRepository.save(any())).thenReturn(Mono.just(buildAccount()));
         when(movementRepository.save(any())).thenReturn(Mono.just(buildMovementForCredit()));
+        when(transactionalOperator.transactional(any(Mono.class))).thenAnswer(invocation -> invocation.getArgument(0));
         StepVerifier.create(movementService.postMovement(buildMovementRequestForCredit()))
                 .expectNextMatches(movementMessage -> !movementMessage.getMessage().isEmpty())
                 .expectComplete()
@@ -43,6 +48,7 @@ class MovementServiceImplTest {
         when(accountRepository.findByNumber(any())).thenReturn(Mono.just(buildAccount()));
         when(accountRepository.save(any())).thenReturn(Mono.just(buildAccount()));
         when(movementRepository.save(any())).thenReturn(Mono.just(buildMovementForDebit()));
+        when(transactionalOperator.transactional(any(Mono.class))).thenAnswer(invocation -> invocation.getArgument(0));
         StepVerifier.create(movementService.postMovement(buildMovementRequestForDebit()))
                 .expectNextMatches(movementMessage -> !movementMessage.getMessage().isEmpty())
                 .expectComplete()
@@ -52,6 +58,7 @@ class MovementServiceImplTest {
     @Test
     void postMovementForFundsUnavailable() {
         when(accountRepository.findByNumber(any())).thenReturn(Mono.just(buildAccount()));
+        when(transactionalOperator.transactional(any(Mono.class))).thenAnswer(invocation -> invocation.getArgument(0));
         StepVerifier.create(movementService.postMovement(buildMovementRequestForDebitError()))
                 .expectErrorMatches(movementMessage -> !movementMessage.getMessage().isEmpty())
                 .verify();

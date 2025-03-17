@@ -31,9 +31,45 @@ spring:
             backOffMaxInterval: 1000
             backOffMultiplier: 2.0
 management:
+  health:
+    circuitbreakers:
+      enabled: true
+    indicators:
+      resilience4j:
+        enabled: true
   endpoints:
     web:
-      base-path: actuator
+      exposure:
+        include: health, prometheus, metrics
+      base-path: /actuator
+    export:
+      prometheus:
+        enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      default:
+        registerHealthIndicator: ${REGISTER_HEALTH}
+        failureRateThreshold: ${FAILURE_RATE}
+        slowCallRateThreshold: ${SLOW_CALL_RATE}
+        slowCallDurationThreshold: ${SLOW_CALL_DURATION}
+        waitDurationInOpenState: ${WAIT_DURATION}
+        permittedNumberOfCallsInHalfOpenState: ${PERMITTED_NUMBER_CALLS}
+        slidingWindowSize: ${SLIDING_SIZE}
+        slidingWindowType: ${SLIDING_TYPE}
+        minimumNumberOfCalls: ${MINIMUM_CALLS}
+        automaticTransitionFromOpenToHalfOpenEnabled: ${AUTOMATIC_TRANSITION}
+  timelimiter:
+    instances:
+      default:
+        timeoutDuration: ${TIMEOUT}
+        cancelRunningFuture: ${CANCEL_RUNNING}
+
+logging:
+  level:
+    root: ${LOG_LEVEL_RESILIENCE}
+    io.github.resilience4j: ${LOG_LEVEL_ROOT}
 
 client:
   users: ${CLIENT_MSA_USERS}

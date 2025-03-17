@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -33,8 +34,12 @@ class ReportServiceImplTest {
     @Mock
     MovementRepository movementRepository;
 
+    @Mock
+    ReactiveCircuitBreaker circuitBreaker;
+
     @Test
     void getMovementByFilterForCreditAndPdf() {
+        when(circuitBreaker.run(any(Mono.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(customerApi.getCustomerById(any())).thenReturn(Mono.just(buildClient()));
         when(accountRepository.findAllByClientId(any())).thenReturn(Flux.just(buildAccount()));
         when(movementRepository.findAllByDateBetweenAndAccountId(any(), any(), any())).thenReturn(Flux.just(buildMovementForCredit()));
@@ -46,6 +51,7 @@ class ReportServiceImplTest {
 
     @Test
     void getMovementByFilterForDebitAndExcel() {
+        when(circuitBreaker.run(any(Mono.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(customerApi.getCustomerById(any())).thenReturn(Mono.just(buildClient()));
         when(accountRepository.findAllByClientId(any())).thenReturn(Flux.just(buildAccount()));
         when(movementRepository.findAllByDateBetweenAndAccountId(any(), any(), any())).thenReturn(Flux.just(buildMovementForDebit()));

@@ -1,14 +1,14 @@
 spring:
   r2dbc:
-   url: r2dbc:h2:mem:///testdb
-   username: sa
-   password:
-     driver: h2
+    url: r2dbc:h2:mem:///testdb
+    username: sa
+    password:
+      driver: h2
   h2:
     console:
       enabled: true
   web-flux:
-    base-path: /api/v1/
+    base-path: /api/v1
   cloud:
     stream:
       bindings:
@@ -31,9 +31,45 @@ spring:
             backOffMaxInterval: 1000
             backOffMultiplier: 2.0
 management:
+  health:
+    circuitbreakers:
+      enabled: true
+    indicators:
+      resilience4j:
+        enabled: true
   endpoints:
     web:
-      base-path: actuator
+      exposure:
+        include: health, prometheus, metrics # Expone endpoints de salud, Prometheus y métricas
+      base-path: /actuator
+    export:
+      prometheus:
+        enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      default:
+        registerHealthIndicator: true
+        failureRateThreshold: 50
+        slowCallRateThreshold: 100
+        slowCallDurationThreshold: 5000ms
+        waitDurationInOpenState: 10000ms
+        permittedNumberOfCallsInHalfOpenState: 10
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+  timelimiter:
+    instances:
+      default:
+        timeoutDuration: 3s
+        cancelRunningFuture: true
+
+logging:
+  level:
+    root: INFO
+    io.github.resilience4j: TRACE
 
 client:
   users: http://localhost:8080/api/v1/

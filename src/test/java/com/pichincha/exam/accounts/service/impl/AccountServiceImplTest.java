@@ -8,6 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -27,9 +29,15 @@ class AccountServiceImplTest {
     @Mock
 
     AccountRepository accountRepository;
-    @Mock
 
+    @Mock
     MovementRepository movementRepository;
+
+    @Mock
+    TransactionalOperator transactionalOperator;
+
+    @Mock
+    ReactiveCircuitBreaker circuitBreaker;
 
     @Test
     void getAccountByFilter() {
@@ -52,9 +60,11 @@ class AccountServiceImplTest {
 
     @Test
     void postAccount() {
+        when(circuitBreaker.run(any(Mono.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(customerApi.getCustomerById(any())).thenReturn(Mono.just(buildClient()));
         when(accountRepository.save(any())).thenReturn(Mono.just(buildAccount()));
         when(movementRepository.save(any())).thenReturn(Mono.just(buildMovementForCredit()));
+        when(transactionalOperator.transactional(any(Mono.class))).thenAnswer(invocation -> invocation.getArgument(0));
         StepVerifier.create(accountService.postAccount(buildAccountDto()))
                 .expectNextMatches(account -> !account.getAccountNumber().isEmpty())
                 .expectComplete()
