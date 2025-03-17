@@ -8,6 +8,7 @@ de que se encuentra creado con API First y OpenApi Generator.
 - **Users**: Se encarga de la gestión de usuarios, incluyendo su creación, actualización y consulta de usuarios como de clientes.
 - **Accounts**: Maneja la administración de cuentas, permitiendo la creación, actualización y recuperación de información de cuentas asociadas a los usuarios, al igual que los reportes tanto en PDF como en Excel.
 
+- **BLUEPRINT**: [Enlace](https://app.mural.co/t/work66507/m/work66507/1741650289420/53b9997f7bcc6787f5fa539e5ad3f2eed1c1befd?sender=u7d804a99d67c6a5724d42908)
 ## Demo 🚀
 
 Puedes acceder a la documentación y probar la API mediante el Openapi adjunto de cada uno de los microservicios:
