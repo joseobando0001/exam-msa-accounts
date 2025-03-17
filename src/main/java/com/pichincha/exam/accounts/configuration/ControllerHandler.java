@@ -4,6 +4,7 @@ import com.pichincha.exam.accounts.domain.dto.Error;
 import com.pichincha.exam.accounts.exception.DuplicateAccount;
 import com.pichincha.exam.accounts.exception.FundsUnavailable;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,6 +33,12 @@ public class ControllerHandler {
     public ResponseEntity<Object> handleFailureInput(Exception exception) {
         log.error(exception.toString());
         return buildResponseEntity(new Error(exception.getMessage(), HttpStatus.BAD_REQUEST));
+    }
+
+    @ExceptionHandler(NoFallbackAvailableException.class)
+    public ResponseEntity<String> handleNoFallbackAvailableException(NoFallbackAvailableException ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Service Unavailable, Try again later.");
     }
 
     private ResponseEntity<Object> buildResponseEntity(Error error) {

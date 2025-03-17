@@ -12,6 +12,7 @@ import com.pichincha.exam.models.MovementFilter;
 import com.pichincha.exam.users.CustomerApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,25 +29,27 @@ public class ReportServiceImpl implements ReportService {
     private final CustomerApi customerApi;
     private final AccountRepository accountRepository;
     private final MovementRepository movementRepository;
+    private final ReactiveCircuitBreaker reactiveCircuitBreaker;
 
     @Override
     public Mono<byte[]> getReportByFilter(String clientId, LocalDate startDate, LocalDate endDate, String reportType) {
         log.info("Get report startDate {} endDate {} clientId {} ", startDate, endDate, clientId);
 
-        return customerApi.getCustomerById(clientId)
-                .flatMap(client ->
-                        accountRepository.findAllByClientId(clientId)
-                                .flatMap(account -> movementRepository.findAllByDateBetweenAndAccountId(
-                                                startDate, endDate, String.valueOf(account.getId()))
-                                        .flatMap(movement -> buildMovementResponse(movement, account, client.getNames()))
-                                )
-                                .collectList()
-                                .flatMap(movementList ->
-                                        reportType.equalsIgnoreCase(TYPE_FILE) ? Util.generatePdfReport(Flux.fromIterable(movementList)) :
-                                                Util.generateExcelReport(Flux.fromIterable(movementList))
-                                )
-                                .doOnError(throwable -> log.error("Error for get the movements {}", throwable.getMessage()))
-                );
+        return reactiveCircuitBreaker.run(
+                customerApi.getCustomerById(clientId)
+                        .flatMap(client ->
+                                accountRepository.findAllByClientId(clientId)
+                                        .flatMap(account -> movementRepository.findAllByDateBetweenAndAccountId(
+                                                        startDate, endDate, String.valueOf(account.getId()))
+                                                .flatMap(movement -> buildMovementResponse(movement, account, client.getNames()))
+                                        )
+                                        .collectList()
+                                        .flatMap(movementList ->
+                                                reportType.equalsIgnoreCase(TYPE_FILE) ? Util.generatePdfReport(Flux.fromIterable(movementList)) :
+                                                        Util.generateExcelReport(Flux.fromIterable(movementList))
+                                        )
+                                        .doOnError(throwable -> log.error("Error for get the movements {}", throwable.getMessage()))
+                        ));
     }
 
 
