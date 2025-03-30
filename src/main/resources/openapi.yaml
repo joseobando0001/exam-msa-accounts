@@ -133,6 +133,7 @@ components:
       properties:
         accountNumber:
           type: string
+          pattern: '^[0-9]+$'
         type:
           type: string
           enum: [ Savings, Checking ]
@@ -142,11 +143,13 @@ components:
           type: boolean
         client:
           type: string
+          pattern: '^[0-9]+$'
     Movement:
       type: object
       properties:
         accountNumber:
           type: string
+          pattern: '^[0-9]+$'
         type:
           type: string
           enum: [ Credit, Debit ]
@@ -195,6 +198,7 @@ components:
       properties:
         accountNumber:
           type: string
+          pattern: '^[0-9]+$'
         type:
           type: string
           enum: [ Credit, Debit ]
