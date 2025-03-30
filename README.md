@@ -33,6 +33,11 @@ Este proyecto fue generado con [Spring Initializr](https://start.spring.io/).
     - **Accounts**: `http://localhost:8081/api/v1/`
 4. En cada microservicio adjuntare la colección de Postman tanto local como hacia los microservicios desplegados con CI/CD.
 
+### Pasos para ejecutar el proyecto (docker-compose):
+-- Ejecutar el comando `docker compose up` y listo! 🚀
+-- **NOTA:** Las imagenes estan totalmente listas solo para ser compiladas con sus ultimas versiones✍️
+
+
 ## Tests JUnit 🧪
 
 El proyecto cuenta con pruebas unitarias y de integración usando **JUnit** y **Mockito**:
