@@ -30,7 +30,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Client'
+                  $ref: '#/components/schemas/ClientResponse'
     post:
       tags:
         - Customer
@@ -42,14 +42,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Client'
+              $ref: '#/components/schemas/ClientRequest'
       responses:
         '201':
           description: Client created.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Client'
+                $ref: '#/components/schemas/ClientResponse'
 
   /customers/{userId}:
     get:
@@ -57,7 +57,7 @@ paths:
         - Customer
       summary: Get a customer by ID
       operationId: GetCustomerById
-      description: Get a customer by ID;
+      description: Get a customer by ID.
       parameters:
         - name: userId
           in: path
@@ -71,7 +71,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Client'
+                $ref: '#/components/schemas/ClientResponse'
         '404':
           description: User not found
 
@@ -93,14 +93,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Client'
+              $ref: '#/components/schemas/ClientRequest'
       responses:
         '200':
           description: Client updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Client'
+                $ref: '#/components/schemas/ClientResponse'
         '404':
           description: Client not found
 
@@ -138,7 +138,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Person'
+                  $ref: '#/components/schemas/PersonResponse'
     post:
       tags:
         - Person
@@ -150,111 +150,115 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Person'
+              $ref: '#/components/schemas/PersonRequest'
       responses:
         '201':
           description: Person created.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Person'
-
-  /person/{userId}:
-    get:
-      tags:
-        - Person
-      summary: Get a person by ID
-      operationId: GetPersonById
-      description: Get a person by ID;
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: User Id
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Person found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Person'
-        '404':
-          description: Person not found
-
-    put:
-      tags:
-        - Person
-      summary: Update a person
-      description: Update a person.
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: User Id
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Person'
-      responses:
-        '200':
-          description: Person updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Person'
-        '404':
-          description: Person not found
-
-    delete:
-      tags:
-        - Person
-      summary: Delete person
-      description: Delete person
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: UserId
-          schema:
-            type: string
-      responses:
-        '204':
-          description: Person deleted
-        '404':
-          description: Person not found
+                $ref: '#/components/schemas/PersonResponse'
 
 components:
   schemas:
-    Client:
+    ClientRequest:
       type: object
+      required:
+        - names
+        - address
       properties:
         names:
           type: string
-          description: names for client
+          minLength: 1
+          maxLength: 100
+          description: Names for client
           example: Jose Lema
+          pattern: '^[A-Za-z\s]+$'
         address:
           type: string
-          description: address for client
+          minLength: 1
+          maxLength: 200
+          description: Address for client
           example: Otavalo sn y principal
+          pattern: '^[A-Za-z0-9\s.,-]+$'
         phone:
           type: string
-          description: phone for client
+          pattern: '^\d{10}$'
+          description: Phone number for client
           example: 0986492314
         password:
           type: string
-          description: password for client
+          minLength: 6
+          maxLength: 20
+          description: Password for client
           example: "*******"
         status:
           type: boolean
-          description: status for client
-          example: True
-    Person:
+          description: Status for client
+          example: true
+
+    ClientResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Unique identifier for the client
+        names:
+          type: string
+          description: Names of the client
+        address:
+          type: string
+          description: Address of the client
+        phone:
+          type: string
+          description: Phone number of the client
+        password:
+          type: string
+          description: Password for client (might be hidden in responses)
+        status:
+          type: boolean
+          description: Status for client
+
+    PersonRequest:
+      type: object
+      required:
+        - name
+        - gender
+        - identification
+        - address
+        - phone
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Name of the person
+          pattern: '^[A-Za-z\s]+$'
+        gender:
+          type: string
+          enum:
+            - MALE
+            - FEMALE
+            - OTHER
+          description: Gender of the person
+        identification:
+          type: string
+          minLength: 1
+          maxLength: 20
+          description: Identification number or document of the person
+          pattern: '^[A-Z0-9]+$'
+        address:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Address of the person
+          pattern: '^[A-Za-z0-9\s.,-]+$'
+        phone:
+          type: string
+          pattern: '^\d{10}$'
+          description: Phone number of the person
+
+    PersonResponse:
       type: object
       properties:
         id:
@@ -280,9 +284,3 @@ components:
         phone:
           type: string
           description: Phone number of the person
-      required:
-        - name
-        - gender
-        - identification
-        - address
-        - phone
