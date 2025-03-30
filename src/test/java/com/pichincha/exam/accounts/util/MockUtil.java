@@ -6,7 +6,7 @@ import com.pichincha.exam.accounts.domain.entity.TypeAccount;
 import com.pichincha.exam.accounts.domain.entity.TypeMovement;
 import com.pichincha.exam.models.MovementMessage;
 import com.pichincha.exam.models.MovementRequest;
-import com.pichincha.exam.users.model.Client;
+import com.pichincha.exam.users.model.ClientResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,8 +16,8 @@ public class MockUtil {
 
     }
 
-    public static Client buildClient() {
-        Client client = new Client();
+    public static ClientResponse buildClient() {
+        ClientResponse client = new ClientResponse();
         client.setAddress("SAN JUAN");
         client.setNames("JOSE RODOLFO");
         client.setPassword("Jose123");
