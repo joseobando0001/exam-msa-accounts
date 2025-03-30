@@ -1,0 +1,55 @@
+services:
+  accounts:
+    image: joseobando0001/accounts:v1
+    ports:
+      - "8081:8081"
+    networks:
+      - my_shared_network
+    environment:
+      DB_NAME: testdb
+      DB_USER: sa
+      SPRING_PROFILES_ACTIVE: development
+      TOPIC: topic_exam_account_movements
+      GROUP: "$Group"
+      KAFKA_BROKER: pkc-619z3.us-east1.gcp.confluent.cloud:9092
+      KAFKA_USERNAME: N5LYZOW2JXYIZK5C
+      KAFKA_PASSWORD: jpwSdzwVVzVWBJw1RTFQRVpcpPtCG8YUyiVLBivpj+hpB12UlR44s8ppiKMp+Gdx
+      REGISTER_HEALTH: "true"
+      FAILURE_RATE: "50"
+      SLOW_CALL_RATE: "100"
+      SLOW_CALL_DURATION: "5000ms"
+      WAIT_DURATION: "10000ms"
+      PERMITTED_NUMBER_CALLS: "10"
+      SLIDING_SIZE: "50"
+      SLIDING_TYPE: "COUNT_BASED"
+      MINIMUM_CALLS: "10"
+      AUTOMATIC_TRANSITION: "true"
+      TIMEOUT: "5000ms"
+      CANCEL_RUNNING: "true"
+      LOG_LEVEL_RESILIENCE: "INFO"
+      LOG_LEVEL_ROOT: "INFO"
+      CLIENT_MSA_USERS: "http://users:80/api/v1/"
+
+  users:
+    image: joseobando0001/users:v1
+    networks:
+      - my_shared_network
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      DB_NAME: testdb
+      DB_USER: sa
+      SPRING_PROFILES_ACTIVE: development
+      TOPIC: topic_exam_account_movements
+      PRODUCER_SOURCE: producerClient
+      KAFKA_BROKER: pkc-619z3.us-east1.gcp.confluent.cloud:9092
+      KAFKA_USERNAME: N5LYZOW2JXYIZK5C
+      KAFKA_PASSWORD: jpwSdzwVVzVWBJw1RTFQRVpcpPtCG8YUyiVLBivpj+hpB12UlR44s8ppiKMp+Gdx
+    ports:
+      - "8080:80"
+
+
+networks:
+  my_shared_network:
+    external: true
