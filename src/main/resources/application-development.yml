@@ -70,6 +70,7 @@ logging:
   level:
     root: ${LOG_LEVEL_RESILIENCE}
     io.github.resilience4j: ${LOG_LEVEL_ROOT}
+  config: classpath:logback.xml
 
 client:
   users: ${CLIENT_MSA_USERS}
