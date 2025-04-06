@@ -1,6 +1,6 @@
 services:
   accounts:
-    image: joseobando0001/accounts
+    image: joseobando0001/accounts:latest
     ports:
       - "8081:8081"
     networks:
@@ -31,7 +31,7 @@ services:
       CLIENT_MSA_USERS: "http://users:80/api/v1/"
 
   users:
-    image: joseobando0001/users
+    image: joseobando0001/users:latest
     networks:
       - my_shared_network
     build:
