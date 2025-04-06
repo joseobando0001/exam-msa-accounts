@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.server.ServerWebInputException;
 
 import static com.pichincha.exam.accounts.constants.ErrorConstants.BAD_VALUE;
@@ -29,10 +30,10 @@ public class ControllerHandler {
         return buildResponseEntity(new Error(BAD_VALUE, HttpStatus.BAD_REQUEST));
     }
 
-    @ExceptionHandler({ServerWebInputException.class})
+    @ExceptionHandler({ServerWebInputException.class, WebExchangeBindException.class})
     public ResponseEntity<Object> handleFailureInput(Exception exception) {
         log.error(exception.toString());
-        return buildResponseEntity(new Error(exception.getMessage(), HttpStatus.BAD_REQUEST));
+        return buildResponseEntity(new Error(BAD_VALUE, HttpStatus.BAD_REQUEST));
     }
 
     @ExceptionHandler(NoFallbackAvailableException.class)

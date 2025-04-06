@@ -139,6 +139,8 @@ components:
           enum: [ Savings, Checking ]
         initialBalance:
           type: number
+          minimum: 0.01
+          maximum: 10000000000
         status:
           type: boolean
         client:
@@ -155,7 +157,7 @@ components:
           enum: [ Credit, Debit ]
         value:
           type: number
-          minimum: 0.1
+          minimum: 0.01
           maximum: 10000000000
         date:
           type: string
@@ -204,5 +206,5 @@ components:
           enum: [ Credit, Debit ]
         value:
           type: number
-          minimum: 0.1
+          minimum: 0.01
           maximum: 10000000000
